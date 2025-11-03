@@ -1,0 +1,8 @@
+# Node modules
+node_modules/
+
+# Layers data
+layers/*
+
+# Build output
+collection/

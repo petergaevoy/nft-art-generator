@@ -1,0 +1,25 @@
+{
+  "name": "nft-art-generator",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "compile": "ts-node src/index.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "canvas": "^3.2.0",
+    "fs-extra": "^11.3.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
