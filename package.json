@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "compile": "ts-node src/index.ts",
-    "build": "tsc",
-    "clean": "rm -rf dist build"
+    "create": "ts-node src/index.ts",
+    "replace-img-cid": "ts-node src/utils/update-cid.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
@@ -17,9 +18,14 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.10.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4"
   }
 }

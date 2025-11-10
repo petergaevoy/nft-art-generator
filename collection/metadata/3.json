@@ -1,0 +1,27 @@
+{
+  "name": "Test Collection #3",
+  "description": "Collection description",
+  "external_link": "https://example.com",
+  "image": "ipfs://QmPLACEHOLDER/3.png/",
+  "banner_image": "ipfs://QmPLACEHOLDER_BANNER",
+  "seller_fee_basis_points": 500,
+  "fee_recipient": "0x1234567890abcdef1234567890abcdef12345678",
+  "attributes": [
+    {
+      "trait": "backdrop",
+      "value": "pink"
+    },
+    {
+      "trait": "body",
+      "value": "grey"
+    },
+    {
+      "trait": "ears",
+      "value": "violet"
+    },
+    {
+      "trait": "outline",
+      "value": "pink"
+    }
+  ]
+}
