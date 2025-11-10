@@ -2,7 +2,7 @@
 node_modules/
 
 # Layers data
-# layers/*
+layers/*
 
 # Build output
-# collection/
+collection/
