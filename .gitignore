@@ -6,3 +6,6 @@ layers/*
 
 # Build output
 collection/
+
+# Temporary files
+.DS_Store
