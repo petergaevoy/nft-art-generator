@@ -7,12 +7,7 @@ import { dirExists } from '../utils/directory'
  *
  * This function scans all JSON files in the specified `metadataDir`,
  * reads each as metadata, and updates only the `image` field if it contains
- * an IPFS link (`ipfs://<oldCid>/<filename>`). The filename part remains unchanged.
- * Other fields (e.g. `banner_image`) are not modified.
- *
- * Typical usage:
- * - After uploading your collection’s image assets to IPFS, use this function
- *   to update metadata so that the `image` field points to the new CID.
+ * an IPFS link (`ipfs://<oldCid>/<filename>`). The filename or subpath part remains unchanged.
  *
  * @param {string} metadataDir - Path to the directory containing metadata files.
  * @param {string} newCid - The new IPFS CID to insert into the `image` field.
@@ -23,49 +18,54 @@ import { dirExists } from '../utils/directory'
  * replaceIpfsCid("collection/metadata", "bafybeihdwdce6examplecid123");
  */
 export function replaceIpfsCid(metadataDir: string, newCid: string): number {
-  dirExists(metadataDir)
+  if (!dirExists(metadataDir)) {
+    throw new Error(`❌ Directory not found: ${metadataDir}`)
+  }
 
   const files = fs.readdirSync(metadataDir)
   let updatedCount = 0
 
   for (const file of files) {
-    const filePath = path.join(metadataDir, file)
-
-    // Пропускаем не-JSON файлы
     if (!file.endsWith('.json')) continue
 
-    const raw = fs.readFileSync(filePath, 'utf8')
+    const filePath = path.join(metadataDir, file)
     let json: any
 
     try {
-      json = JSON.parse(raw)
-    } catch (e) {
-      console.warn(`⚠️ Skipping invalid JSON file: ${file}`)
+      json = JSON.parse(fs.readFileSync(filePath, 'utf8'))
+    } catch {
+      console.warn(`⚠️ Skipping invalid JSON: ${file}`)
       continue
     }
 
     // Меняем только поле `image`
     if (typeof json.image === 'string' && json.image.startsWith('ipfs://')) {
-      const oldImage = json.image
-      const fileName = oldImage.split('/').pop() // сохраняем имя файла (например 1.png)
-      json.image = `ipfs://${newCid}/${fileName}`
-      updatedCount++
+      // Извлекаем часть пути после старого CID (сохраняем .png и подпапки)
+      const match = json.image.match(/^ipfs:\/\/[^/]+\/(.+)$/)
+      if (match && match[1]) {
+        const relativePath = match[1] // например "1.png" или "images/1.png"
+        json.image = `ipfs://${newCid}/${relativePath}`
+        updatedCount++
+      } else {
+        console.warn(`⚠️ Could not extract relative path from: ${json.image}`)
+      }
+    } else {
+      console.warn(`⚠️ No valid "image" field in ${file}`)
     }
 
-    fs.writeFileSync(filePath, JSON.stringify(json, null, 2), 'utf8')
+    fs.writeFileSync(filePath, JSON.stringify(json, null, 2) + '\n', 'utf8')
   }
 
-  console.log(`✅ Updated ${updatedCount} metadata files (image field only) with CID: ${newCid}`)
+  console.log(`\n✅ Updated ${updatedCount} metadata files with new CID: ${newCid}`)
   return updatedCount
 }
 
 if (require.main === module) {
-  const args = process.argv.slice(2)
-  const metadataDir = path.resolve('collection', 'metadata')
-  const newCid = args[0]
+  const [newCid, dirArg] = process.argv.slice(2)
+  const metadataDir = path.resolve(dirArg || 'collection/metadata')
 
   if (!newCid) {
-    console.error('❌ Missing CID argument. Usage: npm run replace-img-cid -- <CID>')
+    console.error('❌ Missing CID argument.\nUsage: npm run replace-img-cid -- <CID> [metadataDir]')
     process.exit(1)
   }
 
