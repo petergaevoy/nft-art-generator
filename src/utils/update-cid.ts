@@ -38,12 +38,10 @@ export function replaceIpfsCid(metadataDir: string, newCid: string): number {
       continue
     }
 
-    // Меняем только поле `image`
     if (typeof json.image === 'string' && json.image.startsWith('ipfs://')) {
-      // Извлекаем часть пути после старого CID (сохраняем .png и подпапки)
       const match = json.image.match(/^ipfs:\/\/[^/]+\/(.+)$/)
       if (match && match[1]) {
-        const relativePath = match[1] // например "1.png" или "images/1.png"
+        const relativePath = match[1]
         json.image = `ipfs://${newCid}/${relativePath}`
         updatedCount++
       } else {
