@@ -65,7 +65,7 @@ if (require.main === module) {
   const newCid = args[0]
 
   if (!newCid) {
-    console.error('❌ Missing CID argument. Usage: npm run update-cid -- <CID>')
+    console.error('❌ Missing CID argument. Usage: npm run replace-img-cid -- <CID>')
     process.exit(1)
   }
 
